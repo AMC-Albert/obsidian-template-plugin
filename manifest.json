@@ -1,0 +1,11 @@
+{
+	"id": "obsidian-plugin-template",
+	"name": "Plugin Template",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Template for Obsidian plugins with logger pre-configured",
+	"author": "Your Name",
+	"authorUrl": "https://github.com/yourusername",
+	"fundingUrl": "https://buymeacoffee.com/yourusername",
+	"isDesktopOnly": false
+}
