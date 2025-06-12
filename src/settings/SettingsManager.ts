@@ -1,5 +1,5 @@
 import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { debug, info, warn, error } from '@/utils';
+import { loggerDebug, loggerInfo, loggerWarn, loggerError } from '@/utils';
 import type { PluginWithSettings, TemplatePluginSettings } from '@/types';
 
 export type { TemplatePluginSettings } from '@/types';
@@ -13,27 +13,27 @@ export class SettingsManager {
 		this.settings = settings;
 	}
 	async initialize() {
-		debug(this, 'Initializing settings manager - preparing UI components');
+		loggerDebug(this, 'Initializing settings manager - preparing UI components');
 		
-		debug(this, 'Registering settings tab with Obsidian app');
+		loggerDebug(this, 'Registering settings tab with Obsidian app');
 		this.plugin.addSettingTab(new TemplatePluginSettingTab(this.plugin.app, this.plugin));
 		
-		debug(this, 'Settings manager fully initialized and ready for user interactions');
+		loggerDebug(this, 'Settings manager fully initialized and ready for user interactions');
 	}
 
 	getSettings(): TemplatePluginSettings {
-		debug(this, 'Retrieving current settings configuration');
+		loggerDebug(this, 'Retrieving current settings configuration');
 		return this.settings;
 	}
 	async updateSetting<K extends keyof TemplatePluginSettings>(
 		key: K, 
 		value: TemplatePluginSettings[K]
 	): Promise<void> {
-		debug(this, `Updating setting: ${String(key)}`, { oldValue: this.settings[key], newValue: value });
+		loggerDebug(this, `Updating setting: ${String(key)}`, { oldValue: this.settings[key], newValue: value });
 		
 		// Validate setting value before applying
 		if (key === 'exampleSetting' && typeof value === 'string' && value.length > 100) {
-			warn(this, 'Setting value exceeds recommended length', { 
+			loggerWarn(this, 'Setting value exceeds recommended length', { 
 				key: String(key), 
 				length: value.length, 
 				maxRecommended: 100 
@@ -44,16 +44,16 @@ export class SettingsManager {
 			this.settings[key] = value;
 			this.plugin.settings[key] = value;
 			
-			debug(this, 'Persisting updated settings to storage');
+			loggerDebug(this, 'Persisting updated settings to storage');
 			await this.plugin.saveData(this.plugin.settings);
-			debug(this, 'Setting update completed successfully');
+			loggerDebug(this, 'Setting update completed successfully');
 			
-			info(this, 'Setting successfully updated', { 
+			loggerInfo(this, 'Setting successfully updated', { 
 				key: String(key), 
 				newValue: typeof value === 'string' && value.length > 50 ? `${value.substring(0, 50)}...` : value 
 			});
 		} catch (updateError) {
-			error(this, 'Failed to update plugin setting', { 
+			loggerError(this, 'Failed to update plugin setting', { 
 				key: String(key), 
 				error: updateError instanceof Error ? updateError.message : String(updateError),
 				attemptedValue: value 
@@ -71,24 +71,24 @@ class TemplatePluginSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 	display(): void {
-		debug(this, 'Rendering settings tab UI - building user interface elements');
+		loggerDebug(this, 'Rendering settings tab UI - building user interface elements');
 		const { containerEl } = this;
 
-		debug(this, 'Clearing existing settings container content');
+		loggerDebug(this, 'Clearing existing settings container content');
 		containerEl.empty();
 
-		debug(this, 'Creating enable feature toggle setting');
+		loggerDebug(this, 'Creating enable feature toggle setting');
         new Setting(containerEl)
 			.setName('Enable feature')
 			.setDesc('Enable the main feature of this plugin.')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableFeature)
 				.onChange(async (value) => {
-					debug(this, 'User toggled feature enable setting', { newValue: value });
+					loggerDebug(this, 'User toggled feature enable setting', { newValue: value });
 					await this.plugin.settingsManager.updateSetting('enableFeature', value);
 				}));
 
-		debug(this, 'Creating example text input setting');
+		loggerDebug(this, 'Creating example text input setting');
 		new Setting(containerEl)
 			.setName('Example setting')
 			.setDesc('An example text setting.')
@@ -96,10 +96,10 @@ class TemplatePluginSettingTab extends PluginSettingTab {
 				.setPlaceholder('Enter some text')
 				.setValue(this.plugin.settings.exampleSetting)
 				.onChange(async (value) => {
-					debug(this, 'User modified example setting text', { newValue: value });
+					loggerDebug(this, 'User modified example setting text', { newValue: value });
 					await this.plugin.settingsManager.updateSetting('exampleSetting', value);
 				}));
 		
-		debug(this, 'Settings tab UI rendering completed - all controls configured');
+		loggerDebug(this, 'Settings tab UI rendering completed - all controls configured');
 	}
 }

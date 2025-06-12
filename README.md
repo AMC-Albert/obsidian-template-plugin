@@ -86,28 +86,28 @@ import {
 
 The template demonstrates proper usage of all four logging levels available in obsidian-logger:
 
-#### `debug(this, message, data?)` 
+#### `loggerDebug(this, message, data?)` 
 - **Purpose**: Development and troubleshooting information
 - **When**: Every significant code step, variable state, and execution flow
-- **Example**: `debug(this, 'Loading plugin settings from storage');`
+- **Example**: `loggerDebug(this, 'Loading plugin settings from storage');`
 - **Best Practice**: Use for all routine operations and state tracking
 
-#### `info(this, message, data?)` 
+#### `loggerInfo(this, message, data?)` 
 - **Purpose**: Important user actions and system events  
 - **When**: User interactions, successful operations, notable state changes
-- **Example**: `info(this, 'Settings successfully updated', { key, newValue });`
+- **Example**: `loggerInfo(this, 'Settings successfully updated', { key, newValue });`
 - **Best Practice**: Track significant business logic events and user workflows
 
-#### `warn(this, message, data?)` 
+#### `loggerWarn(this, message, data?)` 
 - **Purpose**: Potentially problematic situations that don't prevent operation
 - **When**: Validation concerns, deprecated usage, potential user mistakes
-- **Example**: `warn(this, 'File created with spaces in name - may cause linking issues');`
+- **Example**: `loggerWarn(this, 'File created with spaces in name - may cause linking issues');`
 - **Best Practice**: Alert about conditions that should be reviewed or corrected
 
-#### `error(this, message, data?)` 
+#### `loggerError(this, message, data?)` 
 - **Purpose**: Failures and exceptions that prevent normal operation
 - **When**: Caught exceptions, failed operations, critical problems
-- **Example**: `error(this, 'Failed to save plugin settings to storage', { error, settings });`
+- **Example**: `loggerError(this, 'Failed to save plugin settings to storage', { error, settings });`
 - **Best Practice**: Always include error details and relevant context for debugging
 
 **Log Level Guidelines:**
@@ -137,19 +137,19 @@ const settings = new SettingsManager(this);
 await settings.load();
 
 // ✅ Debug-driven approach
-debug(this, 'Initializing settings manager - preparing UI components');
+loggerDebug(this, 'Initializing settings manager - preparing UI components');
 const settings = new SettingsManager(this);
-debug(this, 'Loading saved settings from vault storage');
+loggerDebug(this, 'Loading saved settings from vault storage');
 await settings.load();
 ```
 
 **2. Include Contextual Data**
 ```typescript
 // ❌ Limited context
-debug(this, 'File processed');
+loggerDebug(this, 'File processed');
 
 // ✅ Rich context
-debug(this, 'File processing completed', { 
+loggerDebug(this, 'File processing completed', { 
 	path: file.path,
 	size: file.stat.size,
 	processingTime: Date.now() - startTime
@@ -159,10 +159,10 @@ debug(this, 'File processing completed', {
 **3. Natural Language Messages**
 Write debug messages as if explaining to a colleague:
 ```typescript
-debug(this, 'Starting plugin initialization');
-debug(this, 'Registering command palette entries');
-debug(this, 'Setting up vault event listeners');
-debug(this, 'Plugin ready - all components initialized');
+loggerDebug(this, 'Starting plugin initialization');
+loggerDebug(this, 'Registering command palette entries');
+loggerDebug(this, 'Setting up vault event listeners');
+loggerDebug(this, 'Plugin ready - all components initialized');
 ```
 
 ### Logger Usage Patterns
@@ -177,7 +177,7 @@ export class MyClass {
 	}
 
 	processData(data: any) {
-		debug(this, 'Processing user data', { dataType: typeof data });
+		loggerDebug(this, 'Processing user data', { dataType: typeof data });
 		// → [plugin-id] MyClass.processData: Processing user data {dataType: "object"}
 	}
 }
@@ -186,7 +186,7 @@ export class MyClass {
 **Static/Utility Functions:**
 ```typescript
 function parseDate(text: string): Date {
-	debug('DateUtils', 'parseDate', 'Parsing date string', { input: text });
+	loggerDebug('DateUtils', 'parseDate', 'Parsing date string', { input: text });
 	// → [plugin-id] DateUtils.parseDate: Parsing date string {input: "2025-06-08"}
 }
 ```
@@ -196,7 +196,7 @@ function parseDate(text: string): Date {
 try {
 	await riskyOperation();
 } catch (error) {
-	debug(this, 'Operation failed, attempting fallback', { error: error.message });
+	loggerDebug(this, 'Operation failed, attempting fallback', { error: error.message });
 	return fallbackStrategy();
 }
 ```
